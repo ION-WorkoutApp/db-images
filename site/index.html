@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Exercise DB</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-    <link rel="manifest" href="./site.webmanifest">
-    <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-    <meta name="description" content="Open Public Domain Exercise Dataset in JSON format, over 800 exercises & images with a browsable public searchable frontend">
-    <meta name="google-site-verification" content="Og-KZpNhwgL1ewybKVN-eGm-m4ZoKSENDiSW29ZDkhw">
-  </head>
-  <body class="bg-white dark:bg-gray-900">
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+    <title>Exercise API</title>
+    <script>
+        async function handleRequest() {
+            const queryParam = new URLSearchParams(window.location.search).get('query');
+            if (!queryParam) {
+                document.body.innerHTML = `<h1>404 - Query Missing</h1>`;
+                return;
+            }
+
+            try {
+                const response = await fetch('/dist/exercises.json');
+                const data = await response.json();
+                const exercise = data.find(item => item.id === queryParam);
+
+                if (exercise) {
+                    // Display the first image or customize as needed
+                    const imageUrl = exercise.images[0];
+                    document.body.innerHTML = `
+                        <h1>${exercise.name}</h1>
+                        <img src="${imageUrl}" alt="${exercise.name}">
+                    `;
+                } else {
+                    document.body.innerHTML = `<h1>404 - Image Not Found</h1>`;
+                }
+            } catch (error) {
+                document.body.innerHTML = `<h1>500 - Server Error</h1>`;
+                console.error(error);
+            }
+        }
+
+        window.onload = handleRequest;
+    </script>
+</head>
+
+<body>
+    <h1>Loading...</h1>
+</body>
+
 </html>
