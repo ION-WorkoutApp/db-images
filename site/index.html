@@ -14,16 +14,17 @@
             }
 
             try {
-                const response = await fetch('https://ion-workoutapp.github.io/db-images/dist/exercises.json');
+                const baseURL = 'https://ion-workoutapp.github.io/db-images'
+                const response = await fetch(`${baseURL}/dist/exercises.json`);
                 const data = await response.json();
                 const exercise = data.find(item => item.id === queryParam);
 
                 if (exercise) {
                     // Display the first image or customize as needed
-                    const imageUrl = exercise.images[0];
+                    const imageUrl = `${baseURL}/exercises/${exercise.id}`;
                     document.body.innerHTML = `
-                        <h1>${exercise.name}</h1>
-                        <img src="${imageUrl}" alt="${exercise.name}">
+                        <h1>${exercise.name} - ${imageUrl}</h1>
+                        // <img src="${imageUrl}" alt="${exercise.name}">
                     `;
                 } else {
                     document.body.innerHTML = `<h1>404 - Image Not Found</h1>`;
